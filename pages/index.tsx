@@ -153,7 +153,7 @@ export default function Home(props: any & FormikProps<FormValues>) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Created by randhi.pp@gmail.com
+          Created by randhi.pp
         </a>
       </footer>
     </div>
