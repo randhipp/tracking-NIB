@@ -143,17 +143,26 @@ export default function Home(props: any & FormikProps<FormValues>) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
+        <a href="https://wafvel.com" target="_blank" rel="noopener noreferrer">
+          Wafvel - Whatsapp API
+        </a>
         <a
-          href="https://github.com/randhipp"
+          href="https://github.com/randhipp/tracking-NIB"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Created by randhi.pp
+          <span className={styles.logo}>
+            <Image
+              src="/GitHub-Mark-32px.png"
+              alt="Github Logo"
+              width={16}
+              height={16}
+            />
+          </span>
         </a>
       </footer>
     </div>
