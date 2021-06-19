@@ -1,8 +1,51 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import { useDisclosure } from "react-use-disclosure";
+import { useState } from "react";
 
-export default function Home() {
+import { Formik, Form, Field, FormikProps } from "formik";
+
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+
+import NibModal from "../components/NibModal";
+
+import {
+  Grid,
+  Input,
+  Button,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+} from "@chakra-ui/react";
+
+interface FormValues {
+  nib: number;
+  date: Date;
+}
+
+interface FormType {
+  field: string;
+  form: any;
+}
+
+export default function Home(props: any & FormikProps<FormValues>) {
+  const { isOpen, open, close } = useDisclosure();
+  const [NIB, setNIB] = useState();
+  function validateNIB(value: number) {
+    let error;
+    if (!value) {
+      error = "NIB is required";
+    }
+    return error;
+  }
+  function validateDate(value: string) {
+    let error;
+    if (!value) {
+      error = "Tanggal NIB is required";
+    }
+    return error;
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,44 +55,86 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <h1 className={styles.title}>Tracking NIB</h1>
+        <h4>Cek status NIB Nomor Induk Berusaha disini!</h4>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        <Grid width="100%" mt={20}>
+          <Formik
+            initialValues={{ nib: "", date: "dd-mm-yyyy" }}
+            onSubmit={async (values, actions) => {
+              var myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+              var raw = JSON.stringify({
+                nib: values.nib,
+                date: values.date,
+              });
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+              var requestOptions: any = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+              };
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
+              const res = await fetch("/api/nib", requestOptions);
+              const data = await res.json();
+              setNIB(data);
+              open();
+              actions.setSubmitting(false);
+            }}
           >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+            {(props) => (
+              <Form>
+                <Field name="nib" validate={validateNIB}>
+                  {({ field, form }: FormType) => (
+                    <FormControl
+                      isInvalid={form.errors.nib && form.touched.nib}
+                    >
+                      <FormLabel htmlFor="name">
+                        Nomor Induk Berusaha (NIB)
+                      </FormLabel>
+                      <Input
+                        {...field}
+                        id="nib"
+                        placeholder="Masukkan NIB / Nomor Induk Berusaha"
+                        type="string"
+                      />
+                      <FormErrorMessage>{form.errors.nib}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+                <Field name="date" validate={validateDate}>
+                  {({ field, form }: FormType) => (
+                    <FormControl
+                      isInvalid={form.errors.date && form.touched.date}
+                    >
+                      <FormLabel htmlFor="name" mt={4}>
+                        Tanggal Nomor Induk Berusaha (NIB)
+                      </FormLabel>
+                      <Input
+                        {...field}
+                        id="date"
+                        placeholder="Masukkan Tanggal Terbit NIB"
+                        type="string"
+                      />
+                      <FormErrorMessage>{form.errors.date}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+                <Button
+                  mt={8}
+                  colorScheme="teal"
+                  isLoading={props.isSubmitting}
+                  type="submit"
+                  width="100%"
+                >
+                  Submit
+                </Button>
+              </Form>
+            )}
+          </Formik>
+          {NIB && <NibModal isOpen={isOpen} close={close} NIB={NIB} />}
+        </Grid>
       </main>
 
       <footer className={styles.footer}>
@@ -58,12 +143,19 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
+        <a
+          href="https://github.com/randhipp"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Created by randhi.pp@gmail.com
+        </a>
       </footer>
     </div>
-  )
+  );
 }

@@ -9,9 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^1.6.3",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@types/qs": "^6.9.6",
+    "axios": "^0.21.1",
+    "form-data": "^4.0.0",
+    "formik": "^2.2.9",
+    "framer-motion": "^4",
+    "https": "^1.0.0",
     "next": "11.0.0",
+    "qs": "^6.10.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-use-disclosure": "^3.2.0"
   },
   "devDependencies": {
     "@types/react": "17.0.11",
